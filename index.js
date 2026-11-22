@@ -1,43 +1,23 @@
 
 const express = require("express");
-const app = express();
+const { handleCommand } = require("./commands");
 
-const PREFIX = ".";
+const app = express();
+app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("🔥 RUMBLE BOT IS ONLINE 🔥");
+  res.send("🔥 RUMBLE BOT ONLINE 🔥");
 });
 
 app.get("/menu", (req, res) => {
-  res.send(`
-╔══════════════════╗
-       RUMBLE BOT
-╚══════════════════╝
-
-⚡ GENERAL COMMANDS
-.menu
-.ping
-.owner
-.info
-
-🎨 STICKER COMMANDS
-.sticker
-
-🤖 AI COMMANDS
-.ai
-
-👥 GROUP COMMANDS
-.group
-.kick
-.promote
-
-━━━━━━━━━━━━━━━━━━
-POWERED BY RUMBLE BOT
-  `);
+  res.send(handleCommand(".menu"));
 });
 
-app.get("/ping", (req, res) => {
-  res.send("Pong! 🏓");
+app.get("/command", (req, res) => {
+  const message = req.query.text || "";
+  const response = handleCommand(message);
+
+  res.send(response || "Invalid command");
 });
 
 app.listen(process.env.PORT || 3000, () => {
